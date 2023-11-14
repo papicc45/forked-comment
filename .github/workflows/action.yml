@@ -52,4 +52,4 @@ jobs:
             sudo docker stop $(sudo docker ps -a -q)     
             sudo docker rm $(sudo docker ps -a -q)      
             sudo docker pull jerneithe/comment_service  
-            sudo docker run -d -p 8080:8080 -v $(pwd)/application.yml:/app/config/application.yml jerneithe/comment_service
+            sudo docker run -d -p 8080:8080 -v application.yml:/app/config/application.yml jerneithe/comment_service
