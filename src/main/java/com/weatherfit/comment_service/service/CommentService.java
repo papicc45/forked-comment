@@ -30,8 +30,8 @@ public class CommentService {
     }
 
     public ReplyResponseDTO writeReply(ReplyRequestDTO replyRequestDTO) {
-        Comment comment = commentRepository.findById(replyRequestDTO.getCommentId());
-
+        Optional<Comment> findComment = commentRepository.findById(replyRequestDTO.getCommentId());
+        Comment comment = findComment.get();
         Reply reply = commentMapper.DTOToReply(replyRequestDTO);
         reply.setComment(comment);
         Reply insertReply = replyRepository.save(reply);
