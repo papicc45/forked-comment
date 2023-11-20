@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ReplyRequestDTO {
-    private int boardId;
 
     private int commentId;
 

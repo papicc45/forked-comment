@@ -30,11 +30,9 @@ public class Reply extends BaseEntity{
     private int status;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    @Column(name = "comment_id")
-    private int commentId;
     @PrePersist
     public void prePersist() {
         this.status = this.status == 0 ? 1 : this.status;

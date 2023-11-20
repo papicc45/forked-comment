@@ -15,12 +15,12 @@ import java.util.List;
 public interface CommentMapper {
 
     @Mapping(source = "replyList", target = "replyList")
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "modifiedDate", ignore = true)
+//    @Mapping(target = "createdDate", ignore = true)
+//    @Mapping(target = "modifiedDate", ignore = true)
     CommentRepsonseDTO commentToDTO(Comment comment);
     List<CommentRepsonseDTO> commentsToDTOList(List<Comment> comments);
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "modifiedDate", ignore = true)
+//    @Mapping(target = "createdDate", ignore = true)
+//    @Mapping(target = "modifiedDate", ignore = true)
     ReplyResponseDTO replyToDTO(Reply reply);
     List<ReplyResponseDTO> repliesToDTOList(List<Reply> replies);
 
@@ -31,8 +31,7 @@ public interface CommentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
-    @Mapping(target = "comment", ignore = true)
-    @Mapping(target = "commentId", source = "commentId")
+    @Mapping(target = "comment.id", source = "commentId")
     Reply DTOToReply(ReplyRequestDTO replyRequestDTO);
 
 }

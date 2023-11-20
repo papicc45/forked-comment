@@ -6,13 +6,11 @@ import com.weatherfit.comment_service.dto.ReplyRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyResponseDTO;
 import com.weatherfit.comment_service.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,4 +36,28 @@ public class CommentController {
         System.out.println(result.toString());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @GetMapping("/comments")
+    public ResponseEntity<List<CommentRepsonseDTO>> getCommentsByBoardId(@RequestParam int boardId) {
+        List<CommentRepsonseDTO> result = commentService.getCommentsByBoard(boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<Boolean> removeComment(@RequestParam int commentId) {
+        Boolean result = commentService.removeComment(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @DeleteMapping("/remove/reply")
+    public ResponseEntity<Boolean> removeReply(@RequestParam int replyId) {
+        Boolean result = commentService.removeReply(replyId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+//    @PatchMapping("/modify")
+//    public ResponseEntity<Boolean> modifyComment(@RequestBody CommentRequestDTO commentRequestDTO) {
+//        Boolean result = commentService.modifyComment();
+//        return ResponseEntity.status(HttpStatus.OK).body(result);
+//    }
 }

@@ -19,6 +19,8 @@ public class ReplyResponseDTO {
 
     private String content;
 
+    private int status;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime modifiedDate;
