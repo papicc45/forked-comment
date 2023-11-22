@@ -46,9 +46,9 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByBoardId(boardId);
 
         comments.forEach(comment -> comment.getReplyList().size());
-//        for(Comment c : comments) {
-//            System.out.println(c.toString());
-//        }
+        for(Comment c : comments) {
+            System.out.println(c.toString());
+        }
         return commentMapper.commentsToDTOList(comments);
     }
 
