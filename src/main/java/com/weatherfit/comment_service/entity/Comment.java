@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.weatherfit.comment_service.dto.CommentRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,11 +19,9 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Builder
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class Comment extends BaseEntity{
 
     @Id

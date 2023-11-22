@@ -1,5 +1,6 @@
 package com.weatherfit.comment_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -8,11 +9,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class Reply extends BaseEntity{
 
     @Id

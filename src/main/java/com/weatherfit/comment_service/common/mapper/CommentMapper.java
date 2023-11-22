@@ -15,6 +15,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true), uses = {ReplyMapper.class})
 public interface CommentMapper {
 
+//    @Mapping(source = "replyList", target = "replyList")
+//    @Mapping(target = "replyList", ignore = true)
     @Mapping(target = "createdTime", ignore = true)
     CommentRepsonseDTO commentToDTO(Comment comment);
 
