@@ -6,11 +6,13 @@ import com.weatherfit.comment_service.dto.ReplyRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyResponseDTO;
 import com.weatherfit.comment_service.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,22 +20,16 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @GetMapping("/test")
-    public String test() {
-        return "test2";
-    }
 
     @PostMapping("/write")
     public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestBody CommentRequestDTO commentRequestDTO) {
         CommentRepsonseDTO result = commentService.writeComment(commentRequestDTO);
-        System.out.println(result.toString());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping("/reply")
     public ResponseEntity<ReplyResponseDTO> writeReply(@RequestBody ReplyRequestDTO replyRequestDTO) {
         ReplyResponseDTO result = commentService.writeReply(replyRequestDTO);
-        System.out.println(result.toString());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -55,9 +51,15 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-//    @PatchMapping("/modify")
-//    public ResponseEntity<Boolean> modifyComment(@RequestBody CommentRequestDTO commentRequestDTO) {
-//        Boolean result = commentService.modifyComment();
-//        return ResponseEntity.status(HttpStatus.OK).body(result);
-//    }
+    @PatchMapping("/modify")
+    public ResponseEntity<Boolean> modifyComment(@RequestBody CommentRequestDTO commentRequestDTO) {
+        Boolean result = commentService.modifyComment(commentRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PatchMapping("/modify/reply")
+    public ResponseEntity<Boolean> modifyReply(@RequestBody ReplyRequestDTO replyRequestDTO) {
+        Boolean result = commentService.modifyReply(replyRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

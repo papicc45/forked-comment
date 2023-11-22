@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ReplyRequestDTO {
 
+    private int id;
     private int commentId;
 
     private String nickname;

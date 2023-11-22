@@ -21,7 +21,7 @@ public class ReplyResponseDTO {
 
     private int status;
 
-    private LocalDateTime createdDate;
+    private String createdDate;
 
-    private LocalDateTime modifiedDate;
+    private String createdTime;
 }

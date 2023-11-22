@@ -10,17 +10,16 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Data
+@Builder
 public class CommentRepsonseDTO {
     private int id;
     private int boardId;
     private String nickname;
     private String content;
 
-    private LocalDateTime createdDate;
-
-    private LocalDateTime modifiedDate;
+    private String createdDate;
+    private String createdTime;
 
     private List<ReplyResponseDTO> replyList;
 }
