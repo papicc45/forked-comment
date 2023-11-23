@@ -1,5 +1,6 @@
 package com.weatherfit.comment_service.controller;
 
+import com.weatherfit.comment_service.common.JwtTokenProvider;
 import com.weatherfit.comment_service.dto.CommentRepsonseDTO;
 import com.weatherfit.comment_service.dto.CommentRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyRequestDTO;
@@ -17,11 +18,18 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
-
+    private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     @GetMapping("/jwtTest")
     public String jwtTest() {
         return "jwt success";
+    }
+
+    @GetMapping("/jwtTest2")
+    public String jwtTest2() {
+        String token = jwtTokenProvider.generateToken("test");
+
+        return token;
     }
 
     @PostMapping("/write")
