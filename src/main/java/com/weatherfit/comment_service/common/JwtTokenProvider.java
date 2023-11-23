@@ -2,9 +2,11 @@ package com.weatherfit.comment_service.common;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class JwtTokenProvider {
     private static final String SECREY_KEY = "kdt8_project_weatherfit_secret_key";
     private static final long EXPIRATION_TIME = 86400000L;
