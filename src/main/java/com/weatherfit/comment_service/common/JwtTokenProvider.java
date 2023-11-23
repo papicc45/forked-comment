@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private static final String SECREY_KEY = "kdt8ProjectWeatherfitSecretKey";
+    private static final String SECREY_KEY = "kdt8ProjectWeatherfitSecretKeykdt8ProjectWeatherfitSecretKeykdt8ProjectWeatherfitSecretKey";
     private static final long EXPIRATION_TIME = 86400000L;
 
     public String generateToken(String username) {
