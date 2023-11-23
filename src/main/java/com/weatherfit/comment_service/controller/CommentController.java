@@ -21,14 +21,14 @@ public class CommentController {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     @GetMapping("/jwtTest")
-    public String jwtTest(@RequestHeader("Decoded-Token") String decodedToken) {
+    public String jwtTest(@RequestHeader("decodedToken") String decodedToken) {
         String result = decodedToken + " -> jwt success";
         return result;
     }
 
     @GetMapping("/jwtTest2")
     public String jwtTest2() {
-        String token = jwtTokenProvider.generateToken("test");
+        String token = jwtTokenProvider.generateToken("test2");
 
         return token;
     }
