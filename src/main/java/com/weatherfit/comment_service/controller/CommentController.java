@@ -19,7 +19,10 @@ import java.util.Optional;
 public class CommentController {
 
     private final CommentService commentService;
-
+    @GetMapping("/jwtTest")
+    public String jwtTest() {
+        return "jwt success";
+    }
 
     @PostMapping("/write")
     public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestBody CommentRequestDTO commentRequestDTO) {
