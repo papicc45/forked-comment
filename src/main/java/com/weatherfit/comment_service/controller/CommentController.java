@@ -21,8 +21,9 @@ public class CommentController {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     @GetMapping("/jwtTest")
-    public String jwtTest() {
-        return "jwt success";
+    public String jwtTest(@RequestHeader("Decoded-Token") String decodedToken) {
+        String result = decodedToken + " -> jwt success";
+        return result;
     }
 
     @GetMapping("/jwtTest2")
