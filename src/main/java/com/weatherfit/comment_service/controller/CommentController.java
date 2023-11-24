@@ -33,13 +33,13 @@ public class CommentController {
         return token;
     }
 
-    @PostMapping("/write")
+    @PostMapping("/write")  //헤더 nickname 추가
     public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestBody CommentRequestDTO commentRequestDTO) {
         CommentRepsonseDTO result = commentService.writeComment(commentRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @PostMapping("/reply")
+    @PostMapping("/reply")  //헤더 nickname 추가
     public ResponseEntity<ReplyResponseDTO> writeReply(@RequestBody ReplyRequestDTO replyRequestDTO) {
         ReplyResponseDTO result = commentService.writeReply(replyRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
