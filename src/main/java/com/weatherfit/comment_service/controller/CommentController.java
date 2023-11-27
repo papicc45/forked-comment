@@ -33,14 +33,16 @@ public class CommentController {
         return token;
     }
 
-    @PostMapping("/write")  //헤더 nickname 추가
-    public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestBody CommentRequestDTO commentRequestDTO) {
+    @PostMapping("/write")
+    public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestHeader("decodedToken") String nickname, @RequestBody CommentRequestDTO commentRequestDTO) {
+        commentRequestDTO.setNickname(nickname);
         CommentRepsonseDTO result = commentService.writeComment(commentRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @PostMapping("/reply")  //헤더 nickname 추가
-    public ResponseEntity<ReplyResponseDTO> writeReply(@RequestBody ReplyRequestDTO replyRequestDTO) {
+    @PostMapping("/reply")
+    public ResponseEntity<ReplyResponseDTO> writeReply(@RequestHeader("decodedToken") String nickname, @RequestBody ReplyRequestDTO replyRequestDTO) {
+        replyRequestDTO.setNickname(nickname);
         ReplyResponseDTO result = commentService.writeReply(replyRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

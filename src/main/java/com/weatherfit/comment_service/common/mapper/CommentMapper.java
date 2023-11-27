@@ -15,8 +15,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true), uses = {ReplyMapper.class})
 public interface CommentMapper {
 
-//    @Mapping(source = "replyList", target = "replyList")
-//    @Mapping(target = "replyList", ignore = true)
     @Mapping(target = "createdTime", ignore = true)
     CommentRepsonseDTO commentToDTO(Comment comment);
 
@@ -32,11 +30,9 @@ public interface CommentMapper {
 
         commentRepsonseDTO.setCreatedDate(createdDate);
         commentRepsonseDTO.setCreatedTime(createdTime);
-
     }
     List<CommentRepsonseDTO> commentsToDTOList(List<Comment> comments);
 
-//    @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "replyList", ignore = true)
     Comment DTOToComment(CommentRequestDTO commentRequestDTO);

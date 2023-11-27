@@ -24,7 +24,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final CommentMapper commentMapper;
-
     private final ReplyMapper replyMapper;
 
     public CommentRepsonseDTO writeComment(CommentRequestDTO commentRequestDTO) {
@@ -46,9 +45,6 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByBoardId(boardId);
 
         comments.forEach(comment -> comment.getReplyList().size());
-        for(Comment c : comments) {
-            System.out.println(c.toString());
-        }
         return commentMapper.commentsToDTOList(comments);
     }
 
