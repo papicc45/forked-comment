@@ -25,11 +25,11 @@ public class CommentController {
     public String jwtTest(@RequestHeader("decodedToken") String decodedToken) {
         try {
             String decoded = new String(Base64.getDecoder().decode(decodedToken), "UTF-8");
+            String result = decoded + " -> jwt success";
+            return result;
         } catch (Exception e) {
-
+            return "false";
         }
-        String result = decodedToken + " -> jwt success";
-        return result;
     }
 
     @GetMapping("/jwtTest2")
