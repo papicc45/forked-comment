@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,11 @@ public class CommentController {
     private final CommentService commentService;
     @GetMapping("/jwtTest")
     public String jwtTest(@RequestHeader("decodedToken") String decodedToken) {
+        try {
+            String decoded = new String(Base64.getDecoder().decode(decodedToken), "UTF-8");
+        } catch (Exception e) {
+
+        }
         String result = decodedToken + " -> jwt success";
         return result;
     }
