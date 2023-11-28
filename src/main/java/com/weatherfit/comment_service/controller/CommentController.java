@@ -1,25 +1,22 @@
 package com.weatherfit.comment_service.controller;
 
-import com.weatherfit.comment_service.common.JwtTokenProvider;
 import com.weatherfit.comment_service.dto.CommentRepsonseDTO;
 import com.weatherfit.comment_service.dto.CommentRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyResponseDTO;
 import com.weatherfit.comment_service.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
-    private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     @GetMapping("/jwtTest")
     public String jwtTest(@RequestHeader("decodedToken") String decodedToken) {
@@ -32,23 +29,18 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/jwtTest2")
-    public String jwtTest2() {
-        String token = jwtTokenProvider.generateToken("test2");
-
-        return token;
-    }
-
     @PostMapping("/write")
-    public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestHeader("decodedToken") String nickname, @RequestBody CommentRequestDTO commentRequestDTO) {
-        commentRequestDTO.setNickname(nickname);
+    public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestHeader("decodedToken") String nickname, @RequestBody CommentRequestDTO commentRequestDTO) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickname), "UTF-8");
+        commentRequestDTO.setNickname(decodedNickname);
         CommentRepsonseDTO result = commentService.writeComment(commentRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping("/reply")
-    public ResponseEntity<ReplyResponseDTO> writeReply(@RequestHeader("decodedToken") String nickname, @RequestBody ReplyRequestDTO replyRequestDTO) {
-        replyRequestDTO.setNickname(nickname);
+    public ResponseEntity<ReplyResponseDTO> writeReply(@RequestHeader("decodedToken") String nickname, @RequestBody ReplyRequestDTO replyRequestDTO) throws UnsupportedEncodingException {
+        String decodedNickname = new String(Base64.getDecoder().decode(nickname), "UTF-8");
+        replyRequestDTO.setNickname(decodedNickname);
         ReplyResponseDTO result = commentService.writeReply(replyRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
