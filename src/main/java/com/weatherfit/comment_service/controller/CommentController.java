@@ -1,5 +1,6 @@
 package com.weatherfit.comment_service.controller;
 
+import com.weatherfit.comment_service.config.LocalConfig;
 import com.weatherfit.comment_service.dto.CommentRepsonseDTO;
 import com.weatherfit.comment_service.dto.CommentRequestDTO;
 import com.weatherfit.comment_service.dto.ReplyRequestDTO;
@@ -18,17 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    @GetMapping("/jwtTest")
-    public String jwtTest(@RequestHeader("decodedToken") String decodedToken) {
-        try {
-            String decoded = new String(Base64.getDecoder().decode(decodedToken), "UTF-8");
-            String result = decoded + " -> jwt success";
-            return result;
-        } catch (Exception e) {
-            return "false";
-        }
-    }
 
+    private final LocalConfig localConfig;
+    @GetMapping("/test")
+    public String test() {
+        return localConfig.toString();
+    }
     @PostMapping("/write")
     public ResponseEntity<CommentRepsonseDTO> writeComment(@RequestHeader("decodedToken") String nickname, @RequestBody CommentRequestDTO commentRequestDTO) throws UnsupportedEncodingException {
         String decodedNickname = new String(Base64.getDecoder().decode(nickname), "UTF-8");

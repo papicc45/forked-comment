@@ -21,5 +21,7 @@ public class CommentRepsonseDTO {
     private String createdDate;
     private String createdTime;
 
+    private int status;
+
     private List<ReplyResponseDTO> replyList;
 }
