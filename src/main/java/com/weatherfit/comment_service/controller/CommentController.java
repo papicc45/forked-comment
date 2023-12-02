@@ -21,7 +21,7 @@ public class CommentController {
     private final CommentService commentService;
 
     private final LocalConfig localConfig;
-    @GetMapping("/test")
+    @GetMapping("/jwtTest2")
     public String test() {
         return localConfig.toString();
     }
