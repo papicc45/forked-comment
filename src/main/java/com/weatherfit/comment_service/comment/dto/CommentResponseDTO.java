@@ -1,20 +1,20 @@
-package com.weatherfit.comment_service.dto;
+package com.weatherfit.comment_service.comment.dto;
 
+import com.weatherfit.comment_service.reply.dto.ReplyResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class CommentRepsonseDTO {
-    private int id;
-    private int boardId;
+public class CommentResponseDTO {
+    private Integer id;
+    private Integer boardId;
     private String nickname;
     private String content;
 

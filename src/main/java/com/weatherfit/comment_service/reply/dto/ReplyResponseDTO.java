@@ -1,11 +1,9 @@
-package com.weatherfit.comment_service.dto;
+package com.weatherfit.comment_service.reply.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,13 +11,13 @@ import java.time.LocalDateTime;
 @Data
 public class ReplyResponseDTO {
 
-    private int id;
+    private Integer id;
 
     private String nickname;
 
     private String content;
 
-    private int status;
+    private Integer status;
 
     private String createdDate;
 

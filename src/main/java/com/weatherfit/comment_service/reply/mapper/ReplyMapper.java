@@ -1,10 +1,8 @@
-package com.weatherfit.comment_service.common.mapper;
+package com.weatherfit.comment_service.reply.mapper;
 
-import com.weatherfit.comment_service.dto.CommentRepsonseDTO;
-import com.weatherfit.comment_service.dto.ReplyRequestDTO;
-import com.weatherfit.comment_service.dto.ReplyResponseDTO;
-import com.weatherfit.comment_service.entity.Comment;
-import com.weatherfit.comment_service.entity.Reply;
+import com.weatherfit.comment_service.reply.dto.ReplyRequestDTO;
+import com.weatherfit.comment_service.reply.dto.ReplyResponseDTO;
+import com.weatherfit.comment_service.reply.entity.Reply;
 import org.mapstruct.*;
 
 import java.time.format.DateTimeFormatter;
@@ -26,10 +24,10 @@ public interface ReplyMapper {
         replyResponseDTO.setCreatedDate(createdDate);
         replyResponseDTO.setCreatedTime(createdTime);
     }
-    List<ReplyResponseDTO> repliesToDTOList(List<Reply> replies);
-
+//    List<ReplyResponseDTO> repliesToDTOList(List<Reply> replies);
+//
+List<ReplyResponseDTO> replyListToDTOs(List<Reply> replies);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
-    @Mapping(target = "comment.id", source = "commentId")
     Reply DTOToReply(ReplyRequestDTO replyRequestDTO);
 }
