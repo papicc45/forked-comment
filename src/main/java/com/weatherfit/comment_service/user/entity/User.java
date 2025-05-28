@@ -1,4 +1,4 @@
-package com.weatherfit.comment_service.reply.entity;
+package com.weatherfit.comment_service.user.entity;
 
 import com.weatherfit.comment_service.common.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -8,22 +8,16 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@Table("Users")
 @Getter
 @Setter
-@Table("reply")
-public class Reply extends BaseEntity {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BaseEntity {
     @Id
     private Long id;
-
+    private String userId;
+    private String password;
     private String nickname;
-
-    private String content;
-
     private Integer status = 1;
-
-    private Integer commentId;
-
 }

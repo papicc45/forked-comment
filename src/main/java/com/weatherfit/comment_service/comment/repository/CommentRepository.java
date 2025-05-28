@@ -5,9 +5,9 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 public interface CommentRepository
-        extends ReactiveCrudRepository<Comment, Integer> {
+        extends ReactiveCrudRepository<Comment, Long> {
 
     // boardId 로 Comment 리스트 조회
-    Flux<Comment> findByBoardId(Integer boardId);
+    Flux<Comment> findByBoardId(Long boardId);
 
 }

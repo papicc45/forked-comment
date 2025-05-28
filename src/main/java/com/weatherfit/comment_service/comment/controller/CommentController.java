@@ -28,7 +28,7 @@ public class CommentController {
 //    }
 
     @GetMapping
-    public Flux<CommentResponseDTO> getCommentsByBoardId(@RequestParam Integer boardId) {
+        public Flux<CommentResponseDTO> getCommentsByBoardId(@RequestParam Long boardId) {
         return commentService.getCommentsByBoardId(boardId);
     }
 //
@@ -38,6 +38,13 @@ public class CommentController {
 //        return ResponseEntity.status(HttpStatus.OK).body(result);
 //    }
 //
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> delete(@PathVariable Long commentId) {
+        return commentService.deleteComment(commentId);
+    }
+
+
 //    @DeleteMapping("/remove")
 //    public ResponseEntity<Boolean> removeComment(@RequestParam int commentId) {
 //        Boolean result = commentService.removeComment(commentId);

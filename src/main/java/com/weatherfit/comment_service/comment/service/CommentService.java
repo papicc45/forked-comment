@@ -9,9 +9,14 @@ import com.weatherfit.comment_service.comment.repository.CommentRepository;
 import com.weatherfit.comment_service.reply.mapper.ReplyMapper;
 import com.weatherfit.comment_service.reply.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,7 @@ public class CommentService {
                 .map(commentMapper::commentToDTO);            // Mono<CommentResponseDTO>
     }
 
-    public Flux<CommentResponseDTO> getCommentsByBoardId(int boardId) {
+    public Flux<CommentResponseDTO> getCommentsByBoardId(Long boardId) {
         return commentRepository.findByBoardId(boardId)
                 .flatMap(comment ->
                         replyRepository.findByCommentId(comment.getId())
@@ -42,14 +47,7 @@ public class CommentService {
                                     return dto;
                                 }));
     }
-//    public ReplyResponseDTO writeReply(ReplyRequestDTO replyRequestDTO) {
-//        Optional<Comment> findComment = commentRepository.findById(replyRequestDTO.getCommentId());
-//        Comment comment = findComment.get();
-//        Reply reply = replyMapper.DTOToReply(replyRequestDTO);
-//        reply.setComment(comment);
-//        Reply insertReply = replyRepository.save(reply);
-//        return replyMapper.replyToDTO(insertReply);
-//    }
+
 //
 //    public List<CommentResponseDTO> getCommentsByBoard(int boardId) {
 //        List<Comment> comments = commentRepository.findByBoardId(boardId);
@@ -58,6 +56,17 @@ public class CommentService {
 //        return commentMapper.commentsToDTOList(comments);
 //    }
 //
+    public Mono<Void> deleteComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .switchIfEmpty(
+                            Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Id에 해당하는 댓글이 없음"))
+                )
+                .flatMap(comment -> {
+                    comment.setStatus(0);
+                    return commentRepository.save(comment);
+                })
+                .then();
+    }
 //    public Boolean removeComment(int commentId) {
 //        Optional<Comment> findComment = commentRepository.findById(commentId);
 //        Comment comment = findComment.get();

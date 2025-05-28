@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ReplyRequestDTO {
 
-    private Integer commentId;
+    private Long commentId;
 
     private String nickname;
 

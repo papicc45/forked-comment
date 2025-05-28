@@ -13,13 +13,13 @@ import java.util.List;
 @Data
 @Builder
 public class CommentResponseDTO {
-    private Integer id;
+    private Long id;
     private Integer boardId;
     private String nickname;
     private String content;
 
     private String createdDate;
-    private String createdTime;
+    private String modifiedDate;
 
     private int status;
 

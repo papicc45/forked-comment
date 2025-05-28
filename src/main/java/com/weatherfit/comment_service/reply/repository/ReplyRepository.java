@@ -5,6 +5,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 
 public interface ReplyRepository
-        extends ReactiveCrudRepository<Reply, Integer> {
-    Flux<Reply> findByCommentId(Integer commentId);
+        extends ReactiveCrudRepository<Reply, Long> {
+    Flux<Reply> findByCommentId(Long commentId);
 }

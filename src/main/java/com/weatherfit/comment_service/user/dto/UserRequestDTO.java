@@ -1,4 +1,4 @@
-package com.weatherfit.comment_service.comment.dto;
+package com.weatherfit.comment_service.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Data
-public class CommentRequestDTO {
-
-    private Long boardId;
+@Builder
+public class UserRequestDTO {
+    private String userId;
+    private String password;
     private String nickname;
-    private String content;
 }

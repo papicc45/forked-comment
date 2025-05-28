@@ -1,4 +1,4 @@
-package com.weatherfit.comment_service.reply.dto;
+package com.weatherfit.comment_service.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,21 +7,13 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Data
-public class ReplyResponseDTO {
-
+@Builder
+public class UserResponseDTO {
     private Long id;
-
+    private String userId;
     private String nickname;
-
-    private String content;
-
-    private Integer status;
-
-    private Long commentId;
-
     private String createdDate;
-
     private String modifiedDate;
+
 }

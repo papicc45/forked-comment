@@ -25,4 +25,10 @@ public class ReplyController {
 //        ReplyResponseDTO result = commentService.writeReply(replyRequestDTO);
 //        return ResponseEntity.status(HttpStatus.OK).body(result);
 //    }
+
+    @DeleteMapping("/{replyId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Mono<Void> delete(@PathVariable Long replyId) {
+        return replyService.deleteReply(replyId);
+    }
 }
