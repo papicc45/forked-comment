@@ -3,6 +3,7 @@ package com.weatherfit.comment_service.comment.controller;
 import com.weatherfit.comment_service.comment.dto.CommentRequestDTO;
 import com.weatherfit.comment_service.comment.dto.CommentResponseDTO;
 import com.weatherfit.comment_service.comment.service.CommentService;
+import com.weatherfit.comment_service.comment.service.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +14,13 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RequestMapping("/comment")
 public class CommentController {
-    private final CommentService commentService;
 
+    private final CommentService commentService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CommentResponseDTO> create(@RequestBody Mono<CommentRequestDTO> dtoMono) {
-        return dtoMono.flatMap(commentService::writeComment);
+        return commentService.writeComment(dtoMono);
     }
 //    @PostMapping
 //    public ResponseEntity<CommentResponseDTO> writeComment(@RequestBody CommentRequestDTO commentRequestDTO) {

@@ -1,9 +1,7 @@
 package com.weatherfit.comment_service.user.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.weatherfit.comment_service.user.dto.UserRequestDTO;
+import reactor.core.publisher.Mono;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 }

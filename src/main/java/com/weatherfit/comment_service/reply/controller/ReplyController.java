@@ -3,6 +3,7 @@ package com.weatherfit.comment_service.reply.controller;
 import com.weatherfit.comment_service.reply.dto.ReplyRequestDTO;
 import com.weatherfit.comment_service.reply.dto.ReplyResponseDTO;
 import com.weatherfit.comment_service.reply.service.ReplyService;
+import com.weatherfit.comment_service.reply.service.ReplyServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

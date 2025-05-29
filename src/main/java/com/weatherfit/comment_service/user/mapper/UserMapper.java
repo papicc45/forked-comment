@@ -18,5 +18,6 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User DTOToUser(UserRequestDTO userRequestDTO);
 }

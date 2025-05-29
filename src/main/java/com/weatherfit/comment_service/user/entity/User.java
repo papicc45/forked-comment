@@ -19,5 +19,7 @@ public class User extends BaseEntity {
     private String userId;
     private String password;
     private String nickname;
+    private String email;
+    private String phone;
     private Integer status = 1;
 }
