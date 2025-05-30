@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class CommentResponseDTO {
     private Long id;
-    private Integer boardId;
+    private Long boardId;
     private String nickname;
     private String content;
 
