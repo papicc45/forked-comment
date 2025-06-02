@@ -27,4 +27,7 @@ public class UserRequestDTO {
 
     @NotBlank
     private String phone;
+
+    @NotBlank
+    private String token;
 }
