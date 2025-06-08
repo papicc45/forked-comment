@@ -1,10 +1,9 @@
 package com.weatherfit.comment_service.auth.service;
 
-import com.weatherfit.comment_service.auth.dto.EmailCodeRequestDTO;
-import com.weatherfit.comment_service.auth.dto.EmailCodeVerifyDTO;
-import com.weatherfit.comment_service.auth.dto.SignupTokenResponseDTO;
+import com.weatherfit.comment_service.auth.dto.*;
 import com.weatherfit.comment_service.common.exception.BusinessException;
 import com.weatherfit.comment_service.common.exception.ErrorCode;
+import com.weatherfit.comment_service.common.util.jwt.JwtTokenProvider;
 import com.weatherfit.comment_service.user.dto.UserRequestDTO;
 import com.weatherfit.comment_service.user.dto.UserResponseDTO;
 import com.weatherfit.comment_service.user.entity.User;
@@ -12,8 +11,13 @@ import com.weatherfit.comment_service.user.mapper.UserMapper;
 import com.weatherfit.comment_service.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +25,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private static final Duration TOKEN_TTL = Duration.ofHours(1);
     private static final String REDIS_KEY_VERIFIED = "email:verif:";
     private static final String REDIS_KEY_TOKEN = "email:sign:";
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Mono<Void> sendCodeEmail(String to, String code) {
@@ -131,4 +135,19 @@ public class AuthServiceImpl implements AuthService {
                 .map(userMapper::userToDTO);
     }
 
+    @Override
+    public Mono<JwtResponseDTO> login(Mono<LoginRequestDTO> dtoMono) {
+        return dtoMono
+                .flatMap(dto ->
+                        userRepository.findByUserId(dto.getId())
+                                .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.USER_NOT_FOUND)))
+                                .flatMap(user -> {
+                                    if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+                                        return Mono.error(new BusinessException(ErrorCode.PASSWORD_NOT_MATCH));
+                                    }
+                                    String token = jwtTokenProvider.createToken(user.getUserId());
+                                    return Mono.just(new JwtResponseDTO(token));
+                                })
+                        );
+    }
 }

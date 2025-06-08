@@ -1,8 +1,6 @@
 package com.weatherfit.comment_service.auth.controller;
 
-import com.weatherfit.comment_service.auth.dto.EmailCodeRequestDTO;
-import com.weatherfit.comment_service.auth.dto.EmailCodeVerifyDTO;
-import com.weatherfit.comment_service.auth.dto.SignupTokenResponseDTO;
+import com.weatherfit.comment_service.auth.dto.*;
 import com.weatherfit.comment_service.auth.service.AuthService;
 import com.weatherfit.comment_service.user.dto.UserRequestDTO;
 import jakarta.validation.ReportAsSingleViolation;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,5 +41,11 @@ public class AuthController {
     @PostMapping("/verify-code")
     public Mono<SignupTokenResponseDTO> verifyCode(@RequestBody Mono<EmailCodeVerifyDTO> dtoMono) {
         return authService.verifyEmailCode(dtoMono);
+    }
+
+    @PostMapping("/login")
+    public Mono<ResponseEntity<JwtResponseDTO>> login(@RequestBody Mono<LoginRequestDTO> dtoMono) {
+        return authService.login(dtoMono)
+                .map(resp -> ResponseEntity.ok(resp));
     }
 }
