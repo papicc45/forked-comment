@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authenticationManager(authManager)
                 .securityContextRepository(contextRepository)
                 .authorizeExchange(exchanges-> exchanges
-                        .pathMatchers("/auth/login", "auth/signup").permitAll()
+                        .pathMatchers("/auth/login", "auth/signup", "auth/request-email-auth", "auth/verify-code").permitAll()
                         .anyExchange().authenticated()
                 )
                 .build();

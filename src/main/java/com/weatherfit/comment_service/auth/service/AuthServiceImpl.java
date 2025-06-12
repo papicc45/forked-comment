@@ -11,13 +11,8 @@ import com.weatherfit.comment_service.user.mapper.UserMapper;
 import com.weatherfit.comment_service.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,10 +60,10 @@ public class AuthServiceImpl implements AuthService {
             String code = generateRandomCode(15);
             String key = REDIS_KEY_VERIFIED + email;
 
-            // 1) Redis에 (email→code) 저장하고 TTL 설정
+            /** Redis에 (email→code) 저장하고 TTL 설정*/
             return redisOperations.opsForValue()
                     .set(key, code, CODE_TTL)
-                    // 2) 이메일로 코드 발송하기
+                    /** 이메일로 코드 발송*/
                     .then(sendCodeEmail(email, code));
         });
     }
@@ -86,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
                             return Mono.error(new BusinessException(ErrorCode.AUTH_NUMBER_NOT_MATCH));
                         }
                         return redisOperations.opsForValue().delete(verifiedKey)
-                                .then(redisOperations.opsForValue().set(tokenKey, "true", TOKEN_TTL))
+                                .then(redisOperations.opsForValue().set(tokenKey, "true", TOKEN_TTL)) /** 회원가입 시 이메일 인증 거쳤는지 확인 용도*/
                                 .thenReturn(new SignupTokenResponseDTO(tokenKey));
                     });
         });

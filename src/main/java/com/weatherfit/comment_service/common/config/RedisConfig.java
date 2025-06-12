@@ -13,6 +13,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    /** @Primary - 기본 Bean 제외하고 해당 Bean 우선순위로*/
     @Bean
     @Primary
     public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
@@ -24,14 +25,14 @@ public class RedisConfig {
     public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(
             ReactiveRedisConnectionFactory factory) {
 
-        // Key와 Value 모두 StringSerializer 사용
+        /** Key와 Value 모두 StringSerializer 사용*/
         RedisSerializer<String> serializer = new StringRedisSerializer();
 
-        // 빌더 초기화: keySerializer 지정
+        /** 더 초기화: keySerializer 지정*/
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> builder =
                 RedisSerializationContext.newSerializationContext(serializer);
 
-        // valueSerializer 추가 지정
+        /** valueSerializer 추가 지정*/
         RedisSerializationContext<String, String> context = builder
                 .value(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
                 .build();
