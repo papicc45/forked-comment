@@ -17,4 +17,8 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Override
+    public Mono<Boolean> duplicateCheck(String userId) {
+        return userRepository.existsByUserId(userId);
+    }
 }

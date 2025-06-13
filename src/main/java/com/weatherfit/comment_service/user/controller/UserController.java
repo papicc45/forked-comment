@@ -15,4 +15,9 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/check-id-duplicate")
+    public Mono<Boolean> checkIdDuplicate(@RequestParam String userId) {
+        return userService.duplicateCheck(userId);
+    };
+
 }
