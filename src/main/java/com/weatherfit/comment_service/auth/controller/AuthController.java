@@ -50,5 +50,9 @@ public class AuthController {
                 .map(resp -> ResponseEntity.ok(resp));
     }
 
-
+    @PatchMapping("/password")
+    public Mono<ResponseEntity<JwtResponseDTO>> changePassword(@RequestParam String userId, @RequestParam String beforePwd, String afterPwd) {
+        return authService.changePassword(userId, beforePwd, afterPwd)
+                .map(resp -> ResponseEntity.ok(resp));
+    }
 }

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS Users (
     email VARCHAR(255)      NOT NULL UNIQUE,
     phone VARCHAR(20),
     status INT              NOT NULL DEFAULT 1,
+    password_changed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_date DATETIME   NOT NULL,
     modified_date DATETIME  NOT NULL
 );

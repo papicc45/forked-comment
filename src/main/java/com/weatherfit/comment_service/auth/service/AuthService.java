@@ -15,4 +15,5 @@ public interface AuthService {
     Mono<Void> requestEmailCode(Mono<EmailCodeRequestDTO> dtoMono);
     Mono<SignupTokenResponseDTO> verifyEmailCode(Mono<EmailCodeVerifyDTO> dtoMono);
     Mono<JwtResponseDTO> login(Mono<LoginRequestDTO> dtoMono);
+    Mono<JwtResponseDTO> changePassword(String userId, String beforePwd, String afterPwd);
 }

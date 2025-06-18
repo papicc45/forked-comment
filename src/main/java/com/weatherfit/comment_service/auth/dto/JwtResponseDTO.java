@@ -2,13 +2,14 @@ package com.weatherfit.comment_service.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 public class JwtResponseDTO {
     private String token;
     private String tokenType = "Bearer";
-
-    public JwtResponseDTO(String token) {
+    private boolean requirePasswordChange;
+    public JwtResponseDTO(String token, boolean requirePasswordChange) {
        this.token = token;
+       this.requirePasswordChange = requirePasswordChange;
     }
 }

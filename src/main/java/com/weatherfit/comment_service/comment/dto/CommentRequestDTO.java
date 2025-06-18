@@ -1,14 +1,10 @@
 package com.weatherfit.comment_service.comment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
+@Getter
 public class CommentRequestDTO {
 
     private Long boardId;

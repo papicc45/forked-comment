@@ -12,7 +12,10 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 
 @Component
 @AllArgsConstructor
@@ -34,8 +37,15 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
         String userId = jwtTokenProvider.getUserIdFromToken(token);
         return userRepository.findByUserId(userId)
                 .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.USER_NOT_FOUND)))
-                .map(user -> {
-                    return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                .flatMap(user -> {
+                    Date issuedAt = jwtTokenProvider.getIssuedAt(token);
+                    Instant pwdChanged = user.getPasswordChangedAt().atZone(ZoneId.systemDefault()).toInstant();
+
+                    if(issuedAt.toInstant().isBefore(pwdChanged)) {
+                        return Mono.error(new BusinessException(ErrorCode.EXPIRED_TOKEN));
+                    }
+
+                    return Mono.just(new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList()));
                 });
     }
 }

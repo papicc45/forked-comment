@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Table("Users")
 @Getter
 @Setter
@@ -22,4 +24,5 @@ public class User extends BaseEntity {
     private String email;
     private String phone;
     private Integer status = 1;
+    private LocalDateTime passwordChangedAt;
 }

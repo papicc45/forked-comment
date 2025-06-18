@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -140,10 +142,37 @@ public class AuthServiceImpl implements AuthService {
                                     if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
                                         return Mono.error(new BusinessException(ErrorCode.PASSWORD_NOT_MATCH));
                                     }
+                                    LocalDateTime sixMonthsAgo = LocalDateTime.now().minusMinutes(6);
+
                                     String token = jwtTokenProvider.createToken(user.getUserId());
-                                    return Mono.just(new JwtResponseDTO(token));
+                                    return user.getPasswordChangedAt().isBefore(sixMonthsAgo) ? Mono.just(new JwtResponseDTO(token, true)) : Mono.just(new JwtResponseDTO(token, false));
                                 })
                         );
     }
 
+    @Override
+    public Mono<JwtResponseDTO> changePassword(String userId, String beforePwd, String afterPwd) {
+        return userRepository.findByUserId(userId)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.USER_NOT_FOUND)))
+                .flatMap(user -> {
+                    if(!passwordEncoder.matches(beforePwd, user.getPassword())) {
+                        return Mono.error(new BusinessException(ErrorCode.PASSWORD_NOT_MATCH));
+                    }
+
+                    return Mono.fromCallable(() ->
+                                passwordEncoder.encode(afterPwd))
+                            .subscribeOn(Schedulers.boundedElastic())
+                            .flatMap(encoded -> {
+                                user.setPassword(encoded);
+                                user.setPasswordChangedAt(LocalDateTime.now());
+
+                                return userRepository.save(user);
+                            });
+                })
+                .map(updatedUser -> {
+                    String newToken = jwtTokenProvider.createToken(updatedUser.getUserId());
+
+                    return new JwtResponseDTO(newToken, false);
+                });
+    }
 }
