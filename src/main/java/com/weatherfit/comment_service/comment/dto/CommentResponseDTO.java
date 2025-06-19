@@ -9,6 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
+@Getter
 public class CommentResponseDTO {
     private Long id;
     private Long boardId;

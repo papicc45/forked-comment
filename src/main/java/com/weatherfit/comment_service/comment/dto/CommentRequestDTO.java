@@ -5,6 +5,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class CommentRequestDTO {
 
     private Long boardId;

@@ -18,6 +18,7 @@ public interface CommentMapper {
 
     @Mapping(source = "createdDate", target = "createdDate", qualifiedByName = "dateTimeFormatting")
     @Mapping(source = "modifiedDate", target = "modifiedDate", qualifiedByName = "dateTimeFormatting")
+
     CommentResponseDTO commentToDTO(Comment comment);
 
 //    @Mapping(target = "createdTime", ignore = true)
@@ -36,6 +37,7 @@ public interface CommentMapper {
     List<CommentResponseDTO> commentsToDTOList(List<Comment> comments);
 
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "id", ignore = true)
     Comment DTOToComment(CommentRequestDTO commentRequestDTO);
 }
 

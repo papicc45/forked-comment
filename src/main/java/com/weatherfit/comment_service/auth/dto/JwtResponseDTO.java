@@ -2,8 +2,10 @@ package com.weatherfit.comment_service.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 public class JwtResponseDTO {
     private String token;
     private String tokenType = "Bearer";
