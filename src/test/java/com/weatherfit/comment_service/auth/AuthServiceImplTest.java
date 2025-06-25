@@ -4,14 +4,21 @@ import com.weatherfit.comment_service.auth.service.AuthServiceImpl;
 import com.weatherfit.comment_service.common.exception.BusinessException;
 import com.weatherfit.comment_service.common.exception.ErrorCode;
 import com.weatherfit.comment_service.common.util.jwt.JwtTokenProvider;
+import com.weatherfit.comment_service.user.dto.UserRequestDTO;
+import com.weatherfit.comment_service.user.dto.UserResponseDTO;
 import com.weatherfit.comment_service.user.entity.User;
+import com.weatherfit.comment_service.user.mapper.UserMapper;
 import com.weatherfit.comment_service.user.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.ReactiveValueOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -34,10 +41,74 @@ public class AuthServiceImplTest {
     @Mock
     JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    ReactiveStringRedisTemplate redisOperations;
+
+    @Mock
+    private UserMapper userMapper;
+
+    @Mock
+    ReactiveValueOperations<String, String> valueOperations;
+
+    private static final String REDIS_KEY_TOKEN = "SIGNUP_TOKEN_";
+
     /** 이 객체 생성할 때, 위 목 객체들 주입*/
     @InjectMocks
     AuthServiceImpl authService;
 
+    @BeforeEach
+    void setUp() {
+        given(redisOperations.opsForValue()).willReturn(valueOperations);
+    }
+
+    @Test
+    void signup_success() {
+        UserRequestDTO dto = new UserRequestDTO("alice@example.com", "password", "nick", "emailaa", "01022222222", "token456");
+        User user = new User();
+        user.setEmail(dto.getEmail());
+        user.setPassword("raw");
+
+        given(valueOperations.get("token456")).willReturn(Mono.just("true"));
+        given(userMapper.DTOToUser(dto)).willReturn(user);
+        given(passwordEncoder.encode("password")).willReturn("encodedPwd");
+
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        given(userRepository.save(captor.capture()))
+                .willAnswer(inv -> Mono.just(captor.getValue()));
+
+        given(redisOperations.opsForValue()).willReturn(valueOperations);
+        given(valueOperations.delete(REDIS_KEY_TOKEN + dto.getEmail())).willReturn(Mono.just(true));
+
+        UserResponseDTO responseDTO = new UserResponseDTO(user.getId(), user.getUserId(), user.getNickname(), user.getCreatedDate().toString(), user.getModifiedDate().toString());
+        given(userMapper.userToDTO(user)).willReturn(responseDTO);
+
+        StepVerifier.create(authService.signup(Mono.just(dto)))
+                .assertNext(resp -> {
+                    User saved = captor.getValue();
+                    assert saved.getPassword().equals("encodedPwd");
+                    assert resp.getUserId().equals(responseDTO.getUserId());
+                })
+                .verifyComplete();
+    }
+    @Test
+    void signup_authNumberNotMatch() {
+        UserRequestDTO dto = new UserRequestDTO("alice@example.com", "password", "nick", "emailaa", "01022222222", "token456");
+        given(valueOperations.get("token456")).willReturn(Mono.just("false"));
+
+        StepVerifier.create(authService.signup(Mono.just(dto)))
+                .expectErrorMatches(ex -> ((BusinessException) ex).getErrorCode() == ErrorCode.AUTH_NUMBER_NOT_MATCH)
+                .verify();
+    }
+
+    @Test
+    void signup_expiredToken() {
+        UserRequestDTO dto = new UserRequestDTO("alice@example.com", "password", "nick", "emailaa", "01022222222", "token123");
+        given(valueOperations.get("token123")).willReturn(Mono.empty());
+
+        StepVerifier.create(authService.signup(Mono.just(dto)))
+                .expectErrorMatches(ex -> ((BusinessException) ex).getErrorCode() == ErrorCode.EXPIRED_TOKEN)
+                .verify();
+    }
     @Test
     void changePassword_userNotFound() {
 
