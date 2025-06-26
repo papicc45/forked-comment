@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private static final Duration CODE_TTL = Duration.ofMinutes(5);
     private static final Duration TOKEN_TTL = Duration.ofHours(1);
     private static final String REDIS_KEY_VERIFIED = "email:verif:";
-    private static final String REDIS_KEY_TOKEN = "email:sign:";
+    private static final String REDIS_KEY_TOKEN = "x";
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override

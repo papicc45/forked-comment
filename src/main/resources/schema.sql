@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS reply (
 
 -- 카테고리 테이블
 CREATE TABLE IF NOT EXISTS category (
-                                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                        name VARCHAR(50) NOT NULL,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
     parent_id BIGINT NULL,
     UNIQUE KEY uk_category_parent(parent_id, name),
     CONSTRAINT fk_category_parent
@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS product (
     productname VARCHAR(100) NOT NULL,
     productnumber BIGINT NOT NULL,
     likecount INT DEFAULT 0,
+    gender INT NOT NULL,
+    stock_count INT NOT NULL,
     category_id BIGINT NOT NULL,
     created_date DATETIME   NOT NULL,
     modified_date DATETIME  NOT NULL,

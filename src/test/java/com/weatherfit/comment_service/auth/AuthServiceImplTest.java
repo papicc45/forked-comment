@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -50,7 +51,7 @@ public class AuthServiceImplTest {
     @Mock
     ReactiveValueOperations<String, String> valueOperations;
 
-    private static final String REDIS_KEY_TOKEN = "SIGNUP_TOKEN_";
+    private static final String REDIS_KEY_TOKEN = "email:sign:";
 
     /** 이 객체 생성할 때, 위 목 객체들 주입*/
     @InjectMocks
@@ -65,8 +66,13 @@ public class AuthServiceImplTest {
     void signup_success() {
         UserRequestDTO dto = new UserRequestDTO("alice@example.com", "password", "nick", "emailaa", "01022222222", "token456");
         User user = new User();
+        user.setUserId(dto.getUserId());
         user.setEmail(dto.getEmail());
         user.setPassword("raw");
+
+        LocalDateTime now  = LocalDateTime.now();
+        ReflectionTestUtils.setField(user, "createdDate", now);
+        ReflectionTestUtils.setField(user, "modifiedDate", now);
 
         given(valueOperations.get("token456")).willReturn(Mono.just("true"));
         given(userMapper.DTOToUser(dto)).willReturn(user);
@@ -77,7 +83,7 @@ public class AuthServiceImplTest {
                 .willAnswer(inv -> Mono.just(captor.getValue()));
 
         given(redisOperations.opsForValue()).willReturn(valueOperations);
-        given(valueOperations.delete(REDIS_KEY_TOKEN + dto.getEmail())).willReturn(Mono.just(true));
+        given(valueOperations.delete(anyString())).willReturn(Mono.just(true));
 
         UserResponseDTO responseDTO = new UserResponseDTO(user.getId(), user.getUserId(), user.getNickname(), user.getCreatedDate().toString(), user.getModifiedDate().toString());
         given(userMapper.userToDTO(user)).willReturn(responseDTO);
