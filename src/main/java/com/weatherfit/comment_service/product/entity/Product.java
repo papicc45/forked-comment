@@ -23,11 +23,13 @@ public class Product extends BaseEntity {
 
     private String brandName;
 
+    private int price;
+
     private int likeCount = 0;
 
     private int gender;
 
-    private int stockCount;
+    private int stock;
 
     private Long categoryId;
 }

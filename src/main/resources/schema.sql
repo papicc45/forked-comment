@@ -52,9 +52,10 @@ CREATE TABLE IF NOT EXISTS product (
     productname VARCHAR(100) NOT NULL,
     productnumber BIGINT NOT NULL,
     brandname VARCHAR(100) NOT NULL,
+    price INT NOT NULL,
     likecount INT DEFAULT 0,
     gender INT NOT NULL,
-    stock_count INT NOT NULL,
+    stock INT NOT NULL,
     category_id BIGINT NOT NULL,
     created_date DATETIME   NOT NULL,
     modified_date DATETIME  NOT NULL,
@@ -143,6 +144,45 @@ CREATE TABLE IF NOT EXISTS product_size_measurement (
         FOREIGN KEY (attribute_id) REFERENCES measurement_attribute(id)
         ON DELETE CASCADE
 );
+
+
+-- 1) 쿠폰 템플릿 정의
+CREATE TABLE IF NOT EXISTS coupon_template (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    coupon_title VARCHAR(255) NOT NULL,
+    discount_type       ENUM('FIXED','PERCENT') NOT NULL,
+    discount_value      INT   NOT NULL,
+    min_order_amount    INT   NOT NULL DEFAULT 0,
+    max_discount_amount INT   DEFAULT NULL,
+    valid_from          DATETIME        NOT NULL,
+    valid_to            DATETIME        NOT NULL,
+    total_issued        INT             NOT NULL DEFAULT 0,  -- 0 = 무제한
+    per_user_limit      INT             NOT NULL DEFAULT 1,
+    template_status     ENUM('ACTIVE','PAUSED','CLOSED') NOT NULL DEFAULT 'ACTIVE',
+    created_date          DATETIME        NOT NULL,
+    modified_date          DATETIME        NOT NULL,
+    PRIMARY KEY (id),
+    INDEX ix_coupon_validity (valid_from, valid_to)
+    );
+
+-- 2) 사용자 쿠폰 발급 이력
+CREATE TABLE IF NOT EXISTS user_coupon (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    template_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    issued_at       DATETIME        NOT NULL,
+    used_at         DATETIME        DEFAULT NULL,
+    status          ENUM('ISSUED','USED','EXPIRED','CANCELLED') NOT NULL DEFAULT 'ISSUED',
+    PRIMARY KEY (id),
+    INDEX ix_user_coupon_user (user_id),
+    INDEX ix_user_coupon_template (template_id),
+    CONSTRAINT fk_user_coupon_template
+    FOREIGN KEY (template_id) REFERENCES coupon_template(id)
+    ON DELETE CASCADE,
+    CONSTRAINT fk_user_coupon_user
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+    );
+
 
     -- ──────────────────────────────
 --  ‘신발’ 카테고리 계층 데이터 (INSERT IGNORE)

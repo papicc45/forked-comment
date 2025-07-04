@@ -17,6 +17,8 @@ public class ProductRequestDTO {
 
     private String brandName;
 
+    private int price;
+
     private int gender;
 
     private int stockCount;
