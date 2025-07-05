@@ -2,6 +2,8 @@ package com.weatherfit.comment_service.common.config;
 
 import com.weatherfit.comment_service.coupon.converter.DiscountTypeReadingConverter;
 import com.weatherfit.comment_service.coupon.converter.DiscountTypeWritingConverter;
+import com.weatherfit.comment_service.coupon.converter.TemplateStatusReadingConverter;
+import com.weatherfit.comment_service.coupon.converter.TemplateStatusWritingConverter;
 import com.weatherfit.comment_service.coupon.entity.DiscountType;
 import io.asyncer.r2dbc.mysql.MySqlConnectionConfiguration;
 import io.asyncer.r2dbc.mysql.MySqlConnectionFactory;
@@ -30,24 +32,34 @@ import java.util.Objects;
 @Configuration
 @EnableR2dbcAuditing
 public class R2dbcConfig  {
+    MySqlConnectionConfiguration configuration = MySqlConnectionConfiguration.builder()
+            .host("127.0.0.1")
+            .user("root")
+            .port(3306)
+            .password("!ehdwns12")
+            .database("r2dbc")
+            .createDatabaseIfNotExist(true)
+            .connectTimeout(Duration.ofSeconds(3))
+            .build();
+    ConnectionFactory connectionFactory = MySqlConnectionFactory.from(configuration);
+    Mono<Connection> connectionMono = Mono.from(connectionFactory.create());
 
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        MySqlConnectionConfiguration configuration = MySqlConnectionConfiguration.builder()
+//                .host("127.0.0.1")
+//                .user("root")
+//                .port(3306)
+//                .password("!ehdwns12")
+//                .database("r2dbc")
+//                .createDatabaseIfNotExist(true)
+//                .connectTimeout(Duration.ofSeconds(3))
+//                .build();
+//        return MySqlConnectionFactory.from(configuration);
+//    }
 
     @Bean
-    public ConnectionFactory connectionFactory() {
-        MySqlConnectionConfiguration configuration = MySqlConnectionConfiguration.builder()
-                .host("127.0.0.1")
-                .user("root")
-                .port(3306)
-                .password("!ehdwns12")
-                .database("r2dbc")
-                .createDatabaseIfNotExist(true)
-                .connectTimeout(Duration.ofSeconds(3))
-                .build();
-        return MySqlConnectionFactory.from(configuration);
-    }
-
-    @Bean
-    public R2dbcCustomConversions customConversions(ConnectionFactory connectionFactory) {
+    public R2dbcCustomConversions customConversions() {
         R2dbcDialect dialect = DialectResolver.getDialect(connectionFactory);
 
         CustomConversions.StoreConversions storeConversions = CustomConversions.StoreConversions.of(
@@ -57,7 +69,9 @@ public class R2dbcConfig  {
 
         List<Object> userConverters = List.of(
                 new DiscountTypeReadingConverter(),
-                new DiscountTypeWritingConverter()
+                new DiscountTypeWritingConverter(),
+                new TemplateStatusReadingConverter(),
+                new TemplateStatusWritingConverter()
         );
 
         return new R2dbcCustomConversions(storeConversions, userConverters);
