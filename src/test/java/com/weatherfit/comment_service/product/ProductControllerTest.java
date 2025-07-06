@@ -39,8 +39,8 @@ public class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        dto1 = new ProductRequestDTO("이름1", 10000L, "브랜드1", 0, 100, 9L);
-        dto2 = new ProductRequestDTO("이름2", 10001L, "브랜드1", 1, 50, 17L);
+        dto1 = new ProductRequestDTO("이름1", 10000L, "브랜드1", 10000, 0, 100, 9L);
+        dto2 = new ProductRequestDTO("이름2", 10001L, "브랜드1", 121000, 1, 50, 17L);
     }
 
     @Test
@@ -65,4 +65,5 @@ public class ProductControllerTest {
                 .expectNext(dto2)
                 .verifyComplete();
     }
+
 }
