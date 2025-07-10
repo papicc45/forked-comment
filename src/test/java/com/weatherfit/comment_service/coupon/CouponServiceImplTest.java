@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.text.spi.CollatorProvider;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -92,7 +93,21 @@ public class CouponServiceImplTest {
 
     @Test
     void calDiscountAmount_percent_success() {
+        CouponTemplate coupon = new CouponTemplate();
+        coupon.setId(1300L);
+        coupon.setDiscountType(DiscountType.PERCENT);
+        coupon.setDiscountValue(20);
+        coupon.setMaxDiscountAmount(20000);
+        coupon.setMinOrderAmount(50000);
+        coupon.setValidFrom(LocalDateTime.now().minusDays(1));
+        coupon.setValidTo(LocalDateTime.now().plusDays(1));
+        coupon.setStatus(TemplateStatus.ACTIVE);
 
+        when(couponRepository.findById(1300L)).thenReturn(Mono.just(coupon));
+
+        StepVerifier.create(couponService.calDiscountAmount(1300L, 2L))
+                .expectNext(12000)
+                .verifyComplete();
     }
 
     @Test
@@ -125,12 +140,48 @@ public class CouponServiceImplTest {
 
     @Test
     void calDiscountAmount_coupon_status_error() {
+        CouponTemplate coupon = new CouponTemplate();
+        coupon.setId(1300L);
+        coupon.setDiscountType(DiscountType.PERCENT);
+        coupon.setDiscountValue(20);
+        coupon.setMaxDiscountAmount(10000);
+        coupon.setMinOrderAmount(50000);
+        coupon.setValidFrom(LocalDateTime.now().minusDays(2));
+        coupon.setValidTo(LocalDateTime.now().plusDays(1));
+        coupon.setStatus(TemplateStatus.CLOSED);
 
+        when(couponRepository.findById(1300L)).thenReturn(Mono.just(coupon));
+        lenient().when(couponRepository.save(any(CouponTemplate.class))).thenReturn(Mono.just(coupon));
+
+        StepVerifier.create(couponService.calDiscountAmount(1300L, 2L))
+                .expectErrorSatisfies(throwable -> {
+                    assertTrue(throwable instanceof BusinessException);
+                    BusinessException exception = (BusinessException) throwable;
+                    assertEquals(ErrorCode.COUPON_STATUS_NOT_ACTIVE, exception.getErrorCode());
+                })
+                .verify();
     }
 
     @Test
     void calDiscountAmount_min_order_amount() {
+        CouponTemplate coupon = new CouponTemplate();
+        coupon.setId(1300L);
+        coupon.setDiscountType(DiscountType.PERCENT);
+        coupon.setDiscountValue(20);
+        coupon.setMaxDiscountAmount(10000);
+        coupon.setMinOrderAmount(70000);
+        coupon.setValidFrom(LocalDateTime.now().minusDays(2));
+        coupon.setValidTo(LocalDateTime.now().plusDays(1));
+        coupon.setStatus(TemplateStatus.ACTIVE);
 
+        when(couponRepository.findById(1300L)).thenReturn(Mono.just(coupon));
+
+        StepVerifier.create(couponService.calDiscountAmount(1300L, 2L))
+                .expectErrorSatisfies(throwable -> {
+                    assertTrue(throwable instanceof BusinessException);
+                    BusinessException exception = (BusinessException) throwable;
+                    assertEquals(ErrorCode.MIN_ORDER_AMOUNT, exception.getErrorCode());
+                })
+                .verify();
     }
-
 }
