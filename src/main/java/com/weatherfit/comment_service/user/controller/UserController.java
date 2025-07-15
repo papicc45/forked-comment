@@ -20,4 +20,9 @@ public class UserController {
         return userService.duplicateCheck(userId);
     };
 
+    @PostMapping("/find-userId")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Void> findUserId(@RequestParam String userName, @RequestParam String userEmail) {
+        return userService.checkUserNameAndEmailMatch(userName, userEmail);
+    }
 }

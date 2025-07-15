@@ -20,6 +20,7 @@ public class User extends BaseEntity {
     private Long id;
     private String userId;
     private String password;
+    private String name;
     private String nickname;
     private String email;
     private String phone;

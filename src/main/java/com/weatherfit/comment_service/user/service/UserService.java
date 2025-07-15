@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface UserService {
     Mono<Boolean> duplicateCheck(String userId);
+    Mono<Void> checkUserNameAndEmailMatch(String userName, String userEmail);
 }

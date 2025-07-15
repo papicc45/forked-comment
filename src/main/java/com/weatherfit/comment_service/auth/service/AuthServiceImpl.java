@@ -33,17 +33,18 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
     private final ReactiveRedisOperations<String, String> redisOperations;
     private final JavaMailSender mailSender;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private static final Duration CODE_TTL = Duration.ofMinutes(5);
     private static final Duration TOKEN_TTL = Duration.ofHours(1);
     private static final String REDIS_KEY_VERIFIED = "email:verif:";
     private static final String REDIS_KEY_TOKEN = "x";
-    private final JwtTokenProvider jwtTokenProvider;
+    private static final String REDIS_KEY_FIND_ID = "FIND_ID_CODE:";
 
     @Override
-    public Mono<Void> sendCodeEmail(String to, String code) {
-        String subject = "회원가입 이메일 인증번호 안내";
-        String text = String.format("안녕하세요.\n회원가입을 위한 인증번호는 [%s] 입니다.\n" +
+    public Mono<Void> sendCodeEmail(String to, String code, int type) {
+        String subject = type == 1 ? "회원가입 이메일 인증번호 안내" : "아이디 찾기 인증번호 안내";
+        String text = String.format("인증번호는 [%s] 입니다.\n" +
                 "인증번호는 5분간 유효합니다.", code);
 
         SimpleMailMessage msg = new SimpleMailMessage();
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
             return redisOperations.opsForValue()
                     .set(key, code, CODE_TTL)
                     /** 이메일로 코드 발송*/
-                    .then(sendCodeEmail(email, code));
+                    .then(sendCodeEmail(email, code, 1));
         });
     }
 
@@ -90,7 +91,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /** 이메일 인증번호 생성*/
-    private String generateRandomCode(int length) {
+    @Override
+    public String generateRandomCode(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
         sb.append(random.nextInt(9)+1);
@@ -173,6 +175,24 @@ public class AuthServiceImpl implements AuthService {
                     String newToken = jwtTokenProvider.createToken(updatedUser.getUserId());
 
                     return new JwtResponseDTO(newToken, false);
+                });
+    }
+
+    @Override
+    public Mono<String> verifyFindUserIdCode(String userEmail, String code) {
+        String key = REDIS_KEY_FIND_ID + userEmail;
+
+        return redisOperations
+                .<String, String>opsForHash()
+                .entries(key)
+                .collectMap(Map.Entry::getKey, Map.Entry::getValue)
+                .flatMap(map -> {
+                    String storedCode = map.get("code");
+                    if(!code.equals(storedCode)) {
+                        return Mono.error(new BusinessException(ErrorCode.AUTH_NUMBER_NOT_MATCH));
+                    }
+
+                    return Mono.just(map.get("userId"));
                 });
     }
 }

@@ -13,6 +13,7 @@ public class UserResponseDTO {
     private Long id;
     private String userId;
     private String nickname;
+    private String name;
     private String createdDate;
     private String modifiedDate;
 

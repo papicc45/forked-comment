@@ -55,4 +55,5 @@ public class AuthController {
         return authService.changePassword(userId, beforePwd, afterPwd)
                 .map(resp -> ResponseEntity.ok(resp));
     }
+
 }
