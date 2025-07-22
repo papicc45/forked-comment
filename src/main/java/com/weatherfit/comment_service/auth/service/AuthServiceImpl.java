@@ -185,6 +185,7 @@ public class AuthServiceImpl implements AuthService {
         return redisOperations
                 .<String, String>opsForHash()
                 .entries(key)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.EXPIRED_TOKEN)))
                 .collectMap(Map.Entry::getKey, Map.Entry::getValue)
                 .flatMap(map -> {
                     String storedCode = map.get("code");

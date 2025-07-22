@@ -1,6 +1,8 @@
 package com.weatherfit.comment_service.user;
 
 import com.weatherfit.comment_service.auth.service.AuthServiceImpl;
+import com.weatherfit.comment_service.common.exception.BusinessException;
+import com.weatherfit.comment_service.common.exception.ErrorCode;
 import com.weatherfit.comment_service.user.entity.User;
 import com.weatherfit.comment_service.user.repository.UserRepository;
 import com.weatherfit.comment_service.user.service.UserServiceImpl;
@@ -38,7 +40,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        when(reactiveRedisOperations.<String, String>opsForHash())
+        lenient().when(reactiveRedisOperations.<String, String>opsForHash())
                 .thenReturn(hashOperations);
     }
 
@@ -78,6 +80,22 @@ public class UserServiceImplTest {
         order.verify(hashOperations).putAll(eq(REDIS_KEY_FIND_ID + user.getEmail()), eq(Map.of("code", "123456789012345", "userId", user.getUserId())));
         order.verify(reactiveRedisOperations).expire(eq(REDIS_KEY_FIND_ID + user.getEmail()), eq(Duration.ofMinutes(5)));
         order.verify(authService).sendCodeEmail(user.getEmail(), "123456789012345", 2);
+    }
 
+    @Test
+    void 아이디찾기_인증과정실패() {
+        User user = new User();
+        user.setName("이동준");
+        user.setEmail("papicc45@naver.com");
+        user.setUserId("papicc45");
+
+        when(userRepository.findByNicknameAndEmail("이동", "papicc45@naver.com"))
+                .thenReturn(Mono.empty());
+
+        StepVerifier.create(userService.checkUserNameAndEmailMatch("이동", "papicc45@naver.com"))
+                .expectErrorMatches(ex ->
+                                ((BusinessException) ex).getErrorCode() == ErrorCode.USER_NOT_FOUND
+                        )
+                .verify();
     }
 }

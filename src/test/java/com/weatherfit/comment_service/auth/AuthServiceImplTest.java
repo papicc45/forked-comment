@@ -227,4 +227,9 @@ public class AuthServiceImplTest {
                 )
                 .verify();
     }
+
+    @Test
+    void 아이디찾기_토큰값_만료() {
+
+    }
 }
